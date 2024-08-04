@@ -111,6 +111,54 @@ flowchart LR
 - Containerized deployment for easy scaling and management
 - Fault-tolerant design with high availability
 
+## Demonstration: E-commerce User Behavior Tracking
+
+This project includes a demonstration of real-time e-commerce user behavior tracking and analysis.
+
+### Data Description
+
+The system processes the following types of events:
+- Page Views: {user_id, page_url, timestamp}
+- Product Views: {user_id, product_id, timestamp}
+- Add to Cart: {user_id, product_id, quantity, timestamp}
+- Purchases: {user_id, product_id, quantity, price, timestamp}
+
+### Running the Demonstration
+
+1. Start the data generator:
+   ```
+   python scripts/ecommerce_data_generator.py
+   ```
+   This script simulates user activity on an e-commerce platform, generating events and sending them to Kafka.
+
+2. Deploy the Flink job for processing e-commerce events:
+   ```
+   flink run -d jobs/ecommerce_analytics_job.jar
+   ```
+   This job reads events from Kafka, processes them in real-time, and writes results to Elasticsearch.
+
+3. Access the Kibana dashboard:
+   ```
+   kubectl port-forward service/kibana 5601:5601
+   ```
+   Open `http://localhost:5601` in your browser and navigate to the "E-commerce Analytics" dashboard.
+
+### What You'll See
+
+The Kibana dashboard provides real-time insights including:
+- User flow through the website (funnel visualization)
+- Most viewed and purchased products
+- Real-time conversion rates
+- Average time to purchase
+- Geographical distribution of users (if location data is included)
+
+### Extending the Demonstration
+
+You can extend this demonstration by:
+- Adding more complex event processing logic in the Flink job
+- Implementing real-time recommendations based on user behavior
+- Integrating machine learning models for predicting user actions or product popularity
+
 ## Installation
 
 1. Clone the repository:
@@ -159,6 +207,31 @@ flowchart LR
    kubectl port-forward service/prometheus 9090:9090
    kubectl port-forward service/grafana 3000:3000
    ```
+
+## Project Structure
+
+```
+real-time-data-pipeline/
+├── src/
+│   ├── main/
+│   │   ├── java/  # Flink jobs and processing logic
+│   │   └── python/  # Helper scripts and data generators
+├── config/
+│   ├── kafka/
+│   ├── flink/
+│   └── elasticsearch/
+├── scripts/
+│   └── ecommerce_data_generator.py
+├── jobs/
+│   └── ecommerce_analytics_job.jar
+├── kubernetes/
+│   ├── kafka.yaml
+│   ├── flink.yaml
+│   └── elasticsearch.yaml
+├── dashboards/
+│   └── ecommerce_analytics.json  # Kibana dashboard configuration
+└── README.md
+```
 
 ## Scalability and Performance
 
